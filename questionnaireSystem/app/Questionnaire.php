@@ -7,18 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class Questionnaire extends Model
 {
     protected $fillable = [
-        'title',
-        'description',
-        'status'
+        'title', 'status', 'description', 'user_id',
     ];
-    
-    public function questions()
+
+    public function user()
     {
-        return $this->belongsToMany(Question::class, 'questionnaire_question');
+        return $this->belongsTo(User::class);
     }
 
-    public function accounts()
+    public function questions()
     {
-        return $this->belongsToMany(Account::class, 'account_questionnaires');
+        return $this->hasMany(Question::class);
+    }
+
+    public function questionnaireResponses()
+    {
+        return $this->hasMany(QuestionnaireResponse::class);
     }
 }

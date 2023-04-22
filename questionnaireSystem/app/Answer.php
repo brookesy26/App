@@ -7,16 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Answer extends Model
 {
     protected $fillable = [
-        'response_id',
-        'question_id',
-        'option_id',
+        'questionnaire_response_id', 'question_id', 'option_id',
     ];
 
-    public function response()
+    public function questionnaireResponse()
     {
-        return $this->belongsTo(Response::class);
+        return $this->belongsTo(QuestionnaireResponse::class);
     }
-    
+
     public function question()
     {
         return $this->belongsTo(Question::class);
