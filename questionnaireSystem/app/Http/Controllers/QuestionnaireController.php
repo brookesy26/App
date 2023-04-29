@@ -7,6 +7,7 @@ use App\User;
 use App\Questionnaire;
 use App\Question;
 use App\Option;
+use Auth;
 
 class QuestionnaireController extends Controller
 {
@@ -14,40 +15,35 @@ class QuestionnaireController extends Controller
     {
         $this->middleware('auth');
     }
-    
+    public function index()
+    {
+        $user_id = Auth::id();
+        $questionnaire = Questionnaire::where('user_id', $user_id)->get();
+
+        return view('home', ['questionnaire' => $questionnaire]);
+    }
     public function create()
     {
         return view('questionnaires.create');
     }
-    public function show(Questionnaire $questionnaire)
-    {
-    return view('questionnaires.show', compact('questionnaire'));
-    }
-
-    
     public function store(Request $request)
     {
         $data = $request->all();
         // dd($request->all());
-        // get the questionnaire title and description
         $title = $data['title'];
         $description = $data['description'];
         
-        // create the questionnaire
+  
         $questionnaire = Questionnaire::create([
             'title' => $title,
             'description' => $description,
-            'user_id' => auth()->user()->id // set the user_id to the currently authenticated user's id
+            'status' => false,
+            'user_id' => auth()->user()->id 
         ]);
         $questionnaire->save();
-        
-        // loop through the question data and create questions and options
-        //data = array
-        //key = name of input i.e., text
-        // value is the user input
+
         foreach ($data as $key => $value) {
             if (strpos($key, 'question') === 0) {
-                // this is a question, create it
                 $question = Question::create([
                     'text' => $value,
                     'questionnaire_id' => $questionnaire->id
@@ -60,7 +56,72 @@ class QuestionnaireController extends Controller
                 ]);
             };
         };    
-        // redirect to the questionnaire show page
-        return redirect()->route('questionnaires.show', ['questionnaire' => $questionnaire->id]);
+        return redirect()->route('home');
     }
+    
+    public function editQuestionnaire(Request $request, Questionnaire $questionnaire)
+    {
+        $data = $request->all();
+        $title = $data['title'];
+        $description = $data['description'];
+        
+        $questionnaire->title = $title;
+        $questionnaire->description = $description;
+        $questionnaire->save();
+
+        foreach ($questionnaire->questions as $question) {
+            $question->options()->delete();
+            $question->delete();
+        }
+        foreach ($data as $key => $value) {
+            if (strpos($key, 'question') === 0) {
+                $question = Question::create([
+                    'text' => $value,
+                    'questionnaire_id' => $questionnaire->id
+                ]);
+            };
+            if (strpos($key, 'option') === 0) {
+                $option = Option::create([
+                'text' => $value,
+                'question_id' => $question->id
+                ]);
+            };
+        };    
+        return redirect()->route('home')->with('status', 'Questionnaire Edited successfully!');
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $questionnaire = Questionnaire::findOrFail($id);
+        $questionnaire->status = !$questionnaire->status;
+        $questionnaire->save();
+        return redirect()->route('home')->with('status', 'Questionnaire updated successfully!');
+    }
+
+    public function edit(Questionnaire $questionnaire)
+    {
+        $questions = $questionnaire->questions;
+        foreach ($questions as $question) {
+            $question->options = $question->options;
+        }
+        return view('questionnaires.edit', compact('questionnaire', 'questions'));
+    }
+
+
+    public function viewResponse(Questionnaire $questionnaire)
+    {
+        $responses = $questionnaire->questionnaireResponses;
+
+        foreach($responses as $response){
+        }
+
+        return view('questionnaires.response', compact('questionnaire', 'response', 'responses'));
+    }
+    
+    public function destroy(Questionnaire $questionnaire)
+    {
+        $questionnaire->delete();
+        return redirect()->route('home')->with('status', 'Questionnaire deleted successfully!');
+    }
+
 };

@@ -11,23 +11,30 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'HomeController@index');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes();
+Route::get('/', 'pullDataController@questionnaireLoad')->name('welcome');
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/home', 'QuestionnaireController@index')->name('home');
 
 Route::get('/questionnaires/create', 'QuestionnaireController@create')->name('questionnaires.create');
 
 Route::post('/questionnaires/create', 'QuestionnaireController@store')->name('questionnaires.store');
 
-Route::get('/questionnaires/{questionnaire}', 'QuestionnaireController@show')->name('questionnaires.show');
+Route::put('/questionnaire/{id}', 'QuestionnaireController@updateStatus')->name('questionnaires.update');
 
-Route::post('/questionnaires/show', 'QuestionnaireResponseController@create')->name('questionnaires.show');
-Route::post('/questionnaires/show', 'QuestionnaireResponseController@create')->name('questionnaires.show');
+Route::get('/questionnaires/{questionnaire}/edit', 'QuestionnaireController@edit')->name('questionnaires.edit');
+
+Route::get('/questionnaires/{questionnaire}', 'pullDataController@show')->name('questionnaires.show');
+
+Route::get('/questionnaires/{questionnaire}/response', 'QuestionnaireController@viewResponse')->name('questionnaires.response');
+
+Route::put('/questionnaires/{questionnaire}', 'QuestionnaireController@editQuestionnaire')->name('questionnaires.updateQuestionnaire');
+
+Route::post('/questionnaires/{questionnaire}/submit-response','QuestionnaireResponseController@submitResponse')->name('submit.response');
+
+Route::delete('/questionnaires/{questionnaire}', 'QuestionnaireController@destroy')->name('questionnaires.destroy');
