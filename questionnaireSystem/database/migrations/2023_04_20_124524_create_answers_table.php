@@ -15,14 +15,15 @@ class CreateAnswersTable extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('response_id');
             $table->unsignedBigInteger('question_id');
+            $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
             $table->unsignedBigInteger('option_id');
+            $table->foreign('option_id')->references('id')->on('options')->onDelete('cascade');
+            $table->unsignedBigInteger('questionnaire_response_id');
+            $table->foreign('questionnaire_response_id')->references('id')->on('questionnaire_responses')->onDelete('cascade');
             $table->timestamps();
-            $table->foreign('response_id')->references('id')->on('responses');
-            $table->foreign('question_id')->references('id')->on('questions');
-            $table->foreign('option_id')->references('id')->on('options');
         });
+        
     }
 
     /**
@@ -35,4 +36,3 @@ class CreateAnswersTable extends Migration
         Schema::dropIfExists('answers');
     }
 }
-

@@ -7,21 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Option extends Model
 {
     protected $fillable = [
-        'text'
+        'text', 'question_id',
     ];
-    
+
     public function question()
     {
         return $this->belongsTo(Question::class);
     }
-    
-    public function questionOptions()
+
+    public function answer()
     {
-        return $this->hasMany(QuestionOption::class);
-    }
-    
-    public function answerOptions()
-    {
-        return $this->hasMany(AnswerOption::class);
+        return $this->hasOne(Answer::class);
     }
 }
