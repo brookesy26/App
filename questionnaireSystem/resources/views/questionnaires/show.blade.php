@@ -27,7 +27,9 @@
                             </div>
                         </div>
                     @endforeach
-                    <button type="submit" class="btn btn-primary mt-3">Submit Response</button>
+                    <input type="checkbox" name="agree" value="1" required>
+                    <label class="form-check-label">I consent to this information being stored</label>
+                    <button type="submit" class="btn btn-primary mt-3 col-md-12">Submit Response</button>
                 </form>
             </div>
         </div>
