@@ -10,7 +10,7 @@ class Answer extends Model
         'questionnaire_response_id', 'question_id', 'option_id',
     ];
 
-    public function questionnaireResponse()
+    public function questionnaireResponses()
     {
         return $this->belongsTo(QuestionnaireResponse::class);
     }

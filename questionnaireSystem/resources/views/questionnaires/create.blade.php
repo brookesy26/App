@@ -19,7 +19,6 @@
               <textarea id="description" class="form-control" name="description" required autocomplete="description"></textarea>
             </div>
           </div>
-          <!-- Add Question button -->
           <button type="button" class="btn btn-secondary mt-3" id="add-question-btn">Add Question</button>
         </div>
             <div class="card">
@@ -27,8 +26,7 @@
                 <div class="card-body" id="all-questions-container">
                 </div>
             </div>
-
-        <button type="submit" class="btn btn-primary mt-3">Set Live</button>
+        <button type="submit" class="btn btn-primary mt-3">Create</button>
       </form>
     </div>
   </div>
